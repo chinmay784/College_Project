@@ -15,6 +15,10 @@ const userSchema = new moongoose.Schema({
         type: String,
         required: true
     },
+    phone: {
+        type: String,
+        required: true
+    },
     profilePic: {
         type: String,
         required: true
@@ -31,4 +35,4 @@ const userSchema = new moongoose.Schema({
     },
 })
 
-module.exports = moongoose.model("User",userSchema);
+module.exports = moongoose.model("User", userSchema);

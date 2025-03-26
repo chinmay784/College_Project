@@ -10,5 +10,5 @@ router.get("/allsearch", getAllchats)
 module.exports = router;
 
 
-// http://localhost:4000/api/auth/search  (In headers you have to give Authorization: your_token)
-// http://localhost:4000/api/auth/allsearch
+// http://localhost:4000/api/chat/search  (In headers you have to give Authorization: your_token)
+// http://localhost:4000/api/chat/allsearch

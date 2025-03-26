@@ -22,7 +22,7 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 // Signup Controller / Business Logic
 exports.registerUser = async (req, res) => {
     try {
-        const { name, email, password, profilePic } = req.body;
+        const { name, email, password, phone, profilePic } = req.body;
 
         // Check if user already exists
         let user = await User.findOne({ email });
@@ -41,6 +41,7 @@ exports.registerUser = async (req, res) => {
             name,
             email,
             password: hashedPassword,
+            phone,
             otp,
             otpExpires,
             profilePic: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`
