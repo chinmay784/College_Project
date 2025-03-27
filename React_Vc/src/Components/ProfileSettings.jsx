@@ -1,14 +1,16 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { FaGoogle, FaGithub, FaTimes } from "react-icons/fa";
 import { UserAppContext } from "../context/UserAppContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Loader from "./Loader";
 
 const ProfileSettings = () => {
   const { user, setUser } = useContext(UserAppContext);
   const navigate = useNavigate();
   const fileInputRef = useRef(null); // Ref for file input
+  const [loading, setLoading] = useState(true);
 
 
   const UpdateProfilePic = async (e) => {
@@ -20,7 +22,7 @@ const ProfileSettings = () => {
 
     const formData = new FormData();
     formData.append("profilePic", file);
-
+    setLoading(false)
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -46,6 +48,7 @@ const ProfileSettings = () => {
       console.error("Error updating profile pic:", error);
       toast.error(error.response?.data?.message || "Error updating profile picture");
     }
+    setLoading(true)
   };
 
   return (
@@ -61,10 +64,6 @@ const ProfileSettings = () => {
                 <span className="h-5 w-5 flex items-center justify-center text-xs">👤</span>
                 Profile
               </li>
-              {/* <li className="flex items-center gap-2 text-gray-600 hover:text-purple-600 hover:bg-purple-100 px-3 py-2 rounded-md cursor-pointer">
-                <span className="h-5 w-5 flex items-center justify-center text-xs">🔒</span>
-                Security
-              </li> */}
             </ul>
           </nav>
         </div>
@@ -99,12 +98,22 @@ const ProfileSettings = () => {
             <input type="file" ref={fileInputRef} className="hidden" onChange={UpdateProfilePic} />
 
             {/* Trigger File Upload */}
-            <button
-              onClick={() => fileInputRef.current.click()}
-              className="text-purple-600 font-medium hover:underline"
-            >
-              Update profile
-            </button>
+            {
+              loading ? (<>
+                <button
+                  onClick={() => fileInputRef.current.click()}
+                  className="text-purple-600 font-medium hover:underline"
+                >
+                  Update profile
+                </button>
+              </>) : (<>
+                <button
+                  className="text-purple-600 font-medium hover:underline"
+                >
+                  <Loader />
+                </button>
+              </>)
+            }
           </div>
 
           {/* Email Addresses */}

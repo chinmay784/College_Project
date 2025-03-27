@@ -75,17 +75,15 @@ export default function Navbar() {
               <div className="flex items-center gap-4 justify-around">
                 {/* Profile Picture */}
                 <Link to={'/profile'}>
-                  <img src={user.profilePic} className="w-10 h-10 rounded-full border-2 border-blue-500 shadow-md" alt="Profile" />
+                  <img
+                    src={user.profilePic}
+                    className="w-12 h-12 md:w-12 md:h-12 rounded-full border-4 border-blue-500 shadow-lg transition-transform transform hover:scale-105 hover:border-blue-700"
+                    alt="Profile"
+                  />
                 </Link>
 
                 {/* Profile & Logout Options */}
                 <div className="flex items-center gap-5">
-                  {/* <Link
-                    to={"/profile"}
-                    className="mt-1 px-4 py-1 bg-red-600  rounded-md shadow-md hover:bg-red-700 text-blue-400 transition duration-300"
-                  >
-                    Profile
-                  </Link> */}
 
                   <button
                     onClick={logout}

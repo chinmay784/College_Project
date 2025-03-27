@@ -3,25 +3,29 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { UserAppContext } from "../../context/UserAppContext";
+import Loader from "../Loader";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {login} = useContext(UserAppContext);
-  const navigate = useNavigate()
+  const { login } = useContext(UserAppContext);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true)
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(false)
     try {
-      const res = await axios.post('http://localhost:4000/api/auth/login',{email,password})
+      const res = await axios.post('http://localhost:4000/api/auth/login', { email, password })
       console.log(res.data.token)
-      login(res.data.token,res.data.user);
+      login(res.data.token, res.data.user);
       navigate("/");
       toast.success("Login successful")
     } catch (error) {
       console.log(error)
       toast.error("Login Failed")
     }
+    setLoading(true)
   };
 
   return (
@@ -67,15 +71,24 @@ const Login = () => {
           <p className="mb-6 text-sm flex justify-end cursor-pointer">
             <Link to={"/forget-password"} className="text-blue-400">Forgot Password?</Link>
           </p>
-          <button className="w-full rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white cursor-pointer">
-            Login
-          </button>
+          {
+            loading ? (<>
+              <button className="w-full rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white cursor-pointer">
+                Login
+              </button>
+            </>) : (<>
+              <button className="w-full rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white cursor-pointer">
+              <Loader />
+              </button>
+            </>)
+          }
         </form>
         <p className="mt-4 mb-7 text-center text-sm text-slate-400">
           Don't Have an account? <Link to={"/signup"} className="hover:underline text-blue-400">Sign Up</Link>
         </p>
         <span className="block w-full h-0.5 bg-gradient-to-r from-slate-900 via-indigo-500 to-slate-900"></span>
       </div>
+
     </div>
   );
 };

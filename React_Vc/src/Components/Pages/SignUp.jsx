@@ -3,21 +3,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { UserAppContext } from "../../context/UserAppContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import Loader from "../Loader";
 
 function SignUp() {
   const { login } = useContext(UserAppContext)
   const [name, setName] = useState("")
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phone,setPhone] = useState("")
+  const [phone, setPhone] = useState("")
   const [error, setError] = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true)
 
   const handleEvent = async (e) => {
     e.preventDefault();
-    setError("")
+    setError("");
+    setLoading(false)
     try {
-      const res = await axios.post(`http://localhost:4000/api/auth/signup`, { name, email,phone, password })
+      const res = await axios.post(`http://localhost:4000/api/auth/signup`, { name, email, phone, password })
       console.log(res.data.token)
       login(res.data.token, res.data.user)
       navigate('/verify-otp', { state: { email } })
@@ -27,7 +30,7 @@ function SignUp() {
       setError(error.response?.data?.message || "Signup failed");
       toast.error("Signup faild");
     }
-
+    setLoading(true)
 
     console.log("Form submitted");
   };
@@ -106,12 +109,23 @@ function SignUp() {
                 required
               />
             </div>
-            <button
-              type="submit"
-              className="w-full rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white cursor-pointer"
-            >
-              Sign Up
-            </button>
+            {
+              loading ? (<>
+                <button
+                  type="submit"
+                  className="w-full rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white cursor-pointer"
+                >
+                  Sign Up
+                </button>
+              </>) : (<>
+                <button
+
+                  className="w-full rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white cursor-pointer"
+                >
+                  <Loader />
+                </button>
+              </>)
+            }
           </form>
           <p className="mt-4 mb-7 text-center text-sm text-slate-400">
             Already Have an account?{" "}

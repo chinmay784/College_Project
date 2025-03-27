@@ -6,6 +6,7 @@ import { RiLayoutRightFill } from "react-icons/ri";
 import { toast } from 'react-toastify';
 import { UserAppContext } from '../../context/UserAppContext';
 import { AiFillDelete } from "react-icons/ai";
+import Loader from '../Loader';
 
 const SearchAi = () => {
 
@@ -14,6 +15,7 @@ const SearchAi = () => {
   const [response, setResponse] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
   const { user, token } = useContext(UserAppContext);
+  const [loading,setLoading] = useState(true)
 
 
   const handleKeyDown = async (event) => {
@@ -24,6 +26,7 @@ const SearchAi = () => {
     }
     if (event.key === "Enter") {
       event.preventDefault(); // Prevents form submission (if inside a form)
+      setLoading(false)
       try {
         const res = await axios.post(`http://localhost:4000/api/chat/search`,
           { prompt },
@@ -35,6 +38,7 @@ const SearchAi = () => {
         console.log(error);
         toast.error("Error in Search Prompt")
       }
+      setLoading(true)
     }
   };
 
@@ -43,6 +47,7 @@ const SearchAi = () => {
       console.log("Please enter a search query")
       return;
     }
+    setLoading(false)
     try {
       const res = await axios.post(`http://localhost:4000/api/chat/search`,
         { prompt },
@@ -54,6 +59,7 @@ const SearchAi = () => {
       console.log(error);
       toast.error("Error in Search Prompt")
     }
+    setLoading(true)
   }
 
 
@@ -112,19 +118,6 @@ const SearchAi = () => {
                 </>)
               }
 
-
-              {/* <p className="text-sm text-gray-400">Today</p>
-              <ul className="space-y-2">
-                <li className="text-gray-300 hover:bg-gray-700 p-2 rounded">React UI with Tailwind</li>
-                <li className="text-gray-300 hover:bg-gray-700 p-2 rounded">React Token Handling Fix</li>
-              </ul>
-
-              <p className="mt-4 text-sm text-gray-400">Previous 7 Days</p>
-              <ul className="space-y-2">
-                <li className="text-gray-300 hover:bg-gray-700 p-2 rounded">Install Commands Summary</li>
-                <li className="text-gray-300 hover:bg-gray-700 p-2 rounded">Smart Parking System MERN</li>
-                <li className="text-gray-300 hover:bg-gray-700 p-2 rounded">React className Error</li>
-              </ul> */}
             </nav>
 
           </aside>
@@ -162,6 +155,9 @@ const SearchAi = () => {
           }
         </div>
 
+          {
+            loading ? (<></>) : (<> <Loader /> </>)
+          }
 
         {/* Footer */}
         <p className="text-gray-500 text-sm mt-6">NEXA AI can make mistakes. Check important info.</p>

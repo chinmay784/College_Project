@@ -2,15 +2,18 @@ import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Loader from "./Loader";
 
 const PassWordSet = () => {
 
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('')
     const [newPassword, setNewPassword] = useState("");
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true)
 
     const handleContinue = async () => {
+        setLoading(false)
         try {
             await axios.post(`http://localhost:4000/api/auth/reset-password`, { email, otp, newPassword });
             toast.success("Password reset Sucessfully");
@@ -19,6 +22,7 @@ const PassWordSet = () => {
             console.log(error)
             toast.error("Error in PasswordSet")
         }
+        setLoading(true)
     };
 
     return (
@@ -49,12 +53,22 @@ const PassWordSet = () => {
                     onChange={(e) => setNewPassword(e.target.value)}
                     className="mt-4 w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
-                <button
-                    onClick={handleContinue}
-                    className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition transform hover:scale-110"
-                >
-                    Continue
-                </button>
+                {
+                    loading ? (<>
+                        <button
+                            onClick={handleContinue}
+                            className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition transform hover:scale-110"
+                        >
+                            Continue
+                        </button>
+                    </>) : (<>
+                        <button
+                            className="mt-6 px-6 py-3 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600 transition transform hover:scale-110"
+                        >
+                           <Loader />
+                        </button>
+                    </>)
+                }
             </div>
         </div>
     );

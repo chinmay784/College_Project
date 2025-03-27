@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Loader from "../Loader";
 
 function Otp() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -9,6 +10,7 @@ function Otp() {
   const navigate = useNavigate();
   const email = location.state?.email;
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true)
 
   const handleChange = (index, event) => {
     const value = event.target.value;
@@ -33,7 +35,7 @@ function Otp() {
 
   const handleSubmit = async () => {
     setError("");
-
+    setLoading(false)
     if (!email) {
       setError("Email is missing. Please try signing up again.");
       toast.error("Email missing. Try again.");
@@ -59,6 +61,7 @@ function Otp() {
       console.error("OTP Verification Error:", error.response?.data || error.message);
       toast.error("OTP verification failed. Please try again.");
     }
+    setLoading(true)
   };
 
   return (
@@ -88,12 +91,23 @@ function Otp() {
 
         {error && <p className="text-center text-red-400">{error}</p>}
 
-        <button
-          onClick={handleSubmit}
-          className="w-full cursor-pointer rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white"
-        >
-          Verify
-        </button>
+        {
+          loading ? (<>
+
+            <button
+              onClick={handleSubmit}
+              className="w-full cursor-pointer rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white"
+            >
+              Verify
+            </button>
+          </>) : (<>
+            <button
+              className="w-full cursor-pointer rounded-full bg-gradient-to-r from-indigo-400 to-indigo-900 py-3 font-medium tracking-wide text-white"
+            >
+              <Loader />
+            </button>
+          </>)
+        }
 
         <p className="mt-5 text-center text-sm">
           <Link className="flex items-center justify-center gap-2 text-slate-400 hover:underline">
