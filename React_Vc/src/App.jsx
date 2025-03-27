@@ -13,6 +13,7 @@ import SearchAi from "./Components/Ace_Ui/SearchAi";
 import ForgotPassEmail from "./Components/ForgotPassEmail";
 import PassWordSet from "./Components/PassWordSet";
 import ProfileSettings from "./Components/ProfileSettings";
+import Details from "./Components/Details";
 
 function App() {
   return (
@@ -28,7 +29,9 @@ function App() {
         <Route path="/reset-password" element={<PassWordSet />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/profile-setting" element={<ProfileSettings />} />
-        <Route path="/search-ai" element={<SearchAi />} />
+        <Route path="/search-ai" element={<SearchAi />} >
+          <Route path="details/:id" element={<Details />} />
+        </Route>
         <Route path="/listen-ai" element={<Voice />} />
       </Routes>
     </BrowserRouter>

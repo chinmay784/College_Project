@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { UserAppContext } from '../../context/UserAppContext';
 import { AiFillDelete } from "react-icons/ai";
 import Loader from '../Loader';
+import { useNavigate } from 'react-router-dom';
 
 const SearchAi = () => {
 
@@ -15,7 +16,8 @@ const SearchAi = () => {
   const [response, setResponse] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
   const { user, token } = useContext(UserAppContext);
-  const [loading,setLoading] = useState(true)
+  const [loading,setLoading] = useState(true);
+  const navigate = useNavigate()
 
 
   const handleKeyDown = async (event) => {
@@ -32,7 +34,7 @@ const SearchAi = () => {
           { prompt },
           { headers: { Authorization: `Bearer ${token}` } }
         )
-        console.log(res.data.response)
+        console.log(res.data.usersearch)
         setResponse(res.data.response)
       } catch (error) {
         console.log(error);
@@ -68,6 +70,7 @@ const SearchAi = () => {
       const res = await axios.get(`http://localhost:4000/api/chat/allsearch`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      // console.log(res.data.searches)
       setSearchHistory(res.data.searches || []);
     } catch (error) {
       console.log(error);
@@ -108,7 +111,7 @@ const SearchAi = () => {
                       searchHistory.map((item, index) => {
                         return (
                           <div key={index} className=' flex justify-between gap-2'>
-                            <li className="text-gray-300 hover:bg-gray-700 p-2 rounded w-45"> {item.query} </li>
+                            <li  className="text-gray-300 hover:bg-gray-700 p-2 rounded w-45"> {item.query} </li>
                             <AiFillDelete className=' text-2xl' />
                           </div>
                         )

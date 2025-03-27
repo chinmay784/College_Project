@@ -2,6 +2,7 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const ChatSave = require("../models/ChatSave");
 const run = require("../geminiApi");
+const mongoose = require("mongoose")
 
 
 
@@ -59,7 +60,7 @@ exports.geminiPrompt = async (req, res) => {
 
 exports.getAllchats = async (req, res) => {
     try {
-       
+
         // Extract token from headers
         const token = req.header("Authorization");
         if (!token) {
@@ -100,3 +101,70 @@ exports.getAllchats = async (req, res) => {
         });
     }
 }
+
+
+
+exports.getSingleChat = async (req, res) => {
+    try {
+        const { userId, queryId } = req.params;
+
+        //  Validate ObjectId format
+        
+        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(queryId)) {
+            return res.status(400).json({ success: false, message: "Invalid ID format." });
+        }
+
+        //  Find the user and search for the specific query
+        const userChats = await ChatSave.findOne({ userId });
+
+        if (!userChats) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+
+        //  Find the query in the `serches` array
+        const foundQuery = userChats.serches.find(q => q._id.toString() === queryId);
+
+        if (!foundQuery) {
+            return res.status(404).json({ success: false, message: "Query not found." });
+        }
+
+        //  Return the found query
+        return res.json({ success: true, query: foundQuery });
+
+    } catch (error) {
+        console.error("Error fetching query:", error);
+        return res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+    }
+}
+
+
+
+
+exports.deleteSingleChat = async (req, res) => {
+    try {
+        const { userId, queryId } = req.params;
+
+        //  Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(queryId)) {
+            return res.status(400).json({ success: false, message: "Invalid ID format." });
+        }
+
+        //  Remove the query from the `serches` array
+        const updatedUser = await ChatSave.findOneAndUpdate(
+            { userId },
+            { $pull: { serches: { _id: queryId } } }, // Remove query by `_id`
+            { new: true } // Return updated document
+        );
+
+        // If user not found
+        if (!updatedUser) {
+            return res.status(404).json({ success: false, message: "User not found." });
+        }
+
+        return res.json({ success: true, message: "Query deleted successfully.", updatedUser });
+
+    } catch (error) {
+        console.error("Error deleting query:", error);
+        return res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+    }
+};
