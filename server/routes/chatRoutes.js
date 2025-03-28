@@ -14,4 +14,5 @@ module.exports = router;
 
 // http://localhost:4000/api/chat/search  (In headers you have to give Authorization: your_token)
 // http://localhost:4000/api/chat/allsearch
-// http://localhost:4000/api/chat/delete-singel-chat
+// http://localhost:4000/api/chat/:userId/query/:queryId
+// http://localhost:4000/api/chat/:userId/query/:queryId

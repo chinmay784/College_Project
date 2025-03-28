@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { UserAppContext } from '../../context/UserAppContext';
 import { AiFillDelete } from "react-icons/ai";
 import Loader from '../Loader';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const SearchAi = () => {
 
@@ -16,8 +16,8 @@ const SearchAi = () => {
   const [response, setResponse] = useState("");
   const [searchHistory, setSearchHistory] = useState([]);
   const { user, token } = useContext(UserAppContext);
-  const [loading,setLoading] = useState(true);
-  const navigate = useNavigate()
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
 
 
   const handleKeyDown = async (event) => {
@@ -70,11 +70,25 @@ const SearchAi = () => {
       const res = await axios.get(`http://localhost:4000/api/chat/allsearch`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // console.log(res.data.searches)
+      console.log(res.data.searches)
       setSearchHistory(res.data.searches || []);
     } catch (error) {
       console.log(error);
       toast.error("Error in AllSearch Prompt")
+    }
+  }
+
+
+
+  const DeleteHandler = async (qId) => {
+    try {
+      const res = await axios.delete(`http://localhost:4000/api/chat/${user._id}/query/${qId}`)
+      console.log(res.data)
+      setData(res.data);
+      toast.success("Query Deleted")
+    } catch (error) {
+      console.log(error);
+      toast.error("Error in Delete a Prompt")
     }
   }
 
@@ -111,8 +125,14 @@ const SearchAi = () => {
                       searchHistory.map((item, index) => {
                         return (
                           <div key={index} className=' flex justify-between gap-2'>
-                            <li  className="text-gray-300 hover:bg-gray-700 p-2 rounded w-45"> {item.query} </li>
-                            <AiFillDelete className=' text-2xl' />
+                            <Link to={`/details/${item._id}`}>
+                              {
+                                searchHistory && (<li className="text-gray-300 hover:bg-gray-700 p-2 rounded w-45"> {item.query} </li>)
+                              }
+                            </Link>
+                            <button onClick={() => DeleteHandler(item._id)} >
+                              <AiFillDelete className=' text-2xl' />
+                            </button>
                           </div>
                         )
                       })
@@ -158,9 +178,9 @@ const SearchAi = () => {
           }
         </div>
 
-          {
-            loading ? (<></>) : (<> <Loader /> </>)
-          }
+        {
+          loading ? (<></>) : (<> <Loader /> </>)
+        }
 
         {/* Footer */}
         <p className="text-gray-500 text-sm mt-6">NEXA AI can make mistakes. Check important info.</p>
