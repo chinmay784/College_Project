@@ -31,7 +31,7 @@ const ProfileSettings = () => {
       }
 
       const res = await axios.post(
-        "http://localhost:4000/api/auth/upload-profile-pic",
+        "https://college-project-ecpj.onrender.com/api/auth/upload-profile-pic",
         formData,
         {
           headers: {
