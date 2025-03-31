@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const { DbConnect } = require("./dataBase/dbConnection");
 const authRoute = require('./routes/authRoutes')
 const chatRoute = require("./routes/chatRoutes")
-dotenv.config();// Load environment variables
+dotenv.config(); // Load environment variables
 
 
 const app = express();
