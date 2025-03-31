@@ -7,7 +7,9 @@ import { toast } from 'react-toastify';
 import { UserAppContext } from '../../context/UserAppContext';
 import { AiFillDelete } from "react-icons/ai";
 import Loader from '../Loader';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { GiCrossMark } from "react-icons/gi";
+import { useNavigate } from 'react-router-dom';
 
 const SearchAi = () => {
 
@@ -18,6 +20,7 @@ const SearchAi = () => {
   const { user, token } = useContext(UserAppContext);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
+  const navigate = useNavigate()
 
 
   const handleKeyDown = async (event) => {
@@ -186,6 +189,10 @@ const SearchAi = () => {
         <p className="text-gray-500 text-sm mt-6">NEXA AI can make mistakes. Check important info.</p>
       </main>
 
+
+      <button onClick={() => navigate("/")} className="absolute top-32 right-20 text-white text-2xl hover:text-red-500 transition-all">
+        <GiCrossMark />
+      </button>
 
     </div>
   )
